@@ -22,7 +22,7 @@ jobs:
             echo "Successfully build the game and complied to WebAssembly"
 
     - name : "Upload to GitHub pages branch gh-pages"
-      uses: JamesIves/github-pages-deploy-action
+      uses: JamesIves/github-pages-deploy-action@4.1.7
       with:
         branch: gh-pages
         folder: src/build/web
