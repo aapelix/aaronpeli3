@@ -214,6 +214,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         # Update current weapon
         if self.current_weapon:
             self.current_weapon.update(self.camera)
+        
 
     def take_damage(self, amount):
         self.health -= amount

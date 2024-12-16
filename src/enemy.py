@@ -73,6 +73,12 @@ class Enemy(pygame.sprite.Sprite):
 
         self.image = frames[int(self.frame_index)]
 
+        # Flip the image if moving to the left (direction.x < 0)
+        if self.rect.x < self.player.rect.x:  # Player is to the right
+            self.image = pygame.transform.flip(frames[int(self.frame_index)], False, False)
+        else:  # Player is to the left
+            self.image = pygame.transform.flip(frames[int(self.frame_index)], True, False)
+
     def take_damage(self, amount):
         self.health -= amount
         self.player.coins = self.player.coins + amount
@@ -98,7 +104,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y += direction.y * self.speed
 
         # Set current animation to "move"
-        self.current_animation = 'move'
+
+        if direction.x != 0 and direction.y != 0:
+            self.current_animation = 'move'
+
         self.animate()
 
     def attack_player(self, player):
