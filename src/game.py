@@ -1,8 +1,9 @@
 import pygame
 import random
 from sprite import AnimatedSprite
-from src.camera import Camera
-from src.enemy import Enemy
+from camera import Camera
+from enemy import Enemy
+import asyncio
 
 class Game:
     def __init__(self, width=800, height=600):
@@ -21,37 +22,37 @@ class Game:
         # Sprite sheet configuration
         spritesheet_config = {
             'idle': {
-                'file': 'assets/sprites/player_idle.png',
+                'file': './assets/sprites/player_idle.png',
                 'frame_width': 16,
                 'frame_height': 16,
                 'frame_count': 2
             },
             'idle_left': {
-                'file': 'assets/sprites/player_idle.png',  # Reuse idle animation
+                'file': './assets/sprites/player_idle.png',  # Reuse idle animation
                 'frame_width': 16,
                 'frame_height': 16,
                 'frame_count': 2
             },
             'run_right': {
-                'file': 'assets/sprites/player_run.png',
+                'file': './assets/sprites/player_run.png',
                 'frame_width': 16,
                 'frame_height': 16,
                 'frame_count': 6
             },
             'run_left': {
-                'file': 'assets/sprites/player_run.png',
+                'file': './assets/sprites/player_run.png',
                 'frame_width': 16,
                 'frame_height': 16,
                 'frame_count': 6
             },
             'run_up': {
-                'file': 'assets/sprites/player_run.png',
+                'file': './assets/sprites/player_run.png',
                 'frame_width': 16,
                 'frame_height': 16,
                 'frame_count': 6
             },
             'run_down': {
-                'file': 'assets/sprites/player_run.png',
+                'file': './assets/sprites/player_run.png',
                 'frame_width': 16,
                 'frame_height': 16,
                 'frame_count': 6
@@ -85,7 +86,7 @@ class Game:
         random_y = random.randint(0, self.screen.get_height())
         self.create_enemy((random_x, random_y))
 
-    def run(self):
+    async def run(self):
         """
         Main game loop
         """
@@ -148,5 +149,7 @@ class Game:
 
             # Cap the frame rate
             self.clock.tick(60)
+
+            await asyncio.sleep(0)
 
         pygame.quit()

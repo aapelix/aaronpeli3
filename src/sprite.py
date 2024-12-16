@@ -1,9 +1,9 @@
 import pygame
 
-from src.weapons.flamethrower import Flamethrower
-from src.weapons.laser_gun import LaserGun
-from src.weapons.pistol import Pistol
-from src.weapons.shotgun import Shotgun
+from weapons.flamethrower import Flamethrower
+from weapons.laser_gun import LaserGun
+from weapons.pistol import Pistol
+from weapons.shotgun import Shotgun
 
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__(self, position, spritesheet_config, scale=2):

@@ -1,7 +1,7 @@
 import pygame
 import math
 import random
-from src.weapons.base_weapon import BaseWeapon
+from .base_weapon import BaseWeapon
 
 
 class Ammo(pygame.sprite.Sprite):
