@@ -12,7 +12,7 @@ class FlameParticle(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = 10
-        self.damage = 15
+        self.damage = 1
 
         spread = random.uniform(-15, 15)
         radians = math.radians(angle + spread)

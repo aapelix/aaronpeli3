@@ -219,4 +219,5 @@ class AnimatedSprite(pygame.sprite.Sprite):
     def take_damage(self, amount):
         self.health -= amount
         if self.health <= 0:
-            print("Player is dead")  # Replace with proper game over logic
+            print("Player is dead")
+            self.kill()
