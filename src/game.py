@@ -86,6 +86,36 @@ class Game:
         random_y = random.randint(0, self.screen.get_height())
         self.create_enemy((random_x, random_y))
 
+    def handle_player_enemy_collision(self):
+        """
+        Handle collisions between the player and enemies.
+        Prevents overlapping and pushes sprites apart.
+        """
+        for enemy in self.enemies:
+            if self.player.rect.colliderect(enemy.rect):
+                # Calculate overlap and push sprites apart
+                overlap_x = 0
+                overlap_y = 0
+
+                # Determine overlap in x and y directions
+                if self.player.rect.centerx - 10 < enemy.rect.centerx:
+                    overlap_x = (self.player.rect.right - enemy.rect.left)
+                else:
+                    overlap_x = -(enemy.rect.right - self.player.rect.left)
+
+                if self.player.rect.centery - 10 < enemy.rect.centery:
+                    overlap_y = (self.player.rect.bottom - enemy.rect.top)
+                else:
+                    overlap_y = -(enemy.rect.bottom - self.player.rect.top)
+
+                # Move sprites apart based on the smallest overlap
+                if abs(overlap_x) < abs(overlap_y):
+                    self.player.rect.x -= overlap_x
+                    enemy.rect.x += overlap_x
+                else:
+                    self.player.rect.y -= overlap_y
+                    enemy.rect.y += overlap_y
+
     async def run(self):
         """
         Main game loop
@@ -99,6 +129,7 @@ class Game:
                 elif event.type == self.SPAWN_ENEMY_EVENT:
                     self.spawn_random_enemy()  # Spawn enemy every 5 seconds
 
+
             # Update
             self.camera.update()
             # In the drawing section of the run method
@@ -108,6 +139,8 @@ class Game:
                     sprite.attack_player(self.player)
                 else:
                     sprite.update(self.camera)
+
+            self.handle_player_enemy_collision()
 
             # Collect all projectiles from current weapon
             if self.player.current_weapon:
