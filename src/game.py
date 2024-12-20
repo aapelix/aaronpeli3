@@ -223,8 +223,8 @@ class Game:
                     projectile_rect = self.camera.apply_rect(projectile.rect)
                     self.screen.blit(projectile.image, projectile_rect)
 
-                kills_text = self.font.render(f"Kills: {self.player.kills}", True, (0, 0, 0))
-                coins_text = self.font.render(f"Coins: {self.player.coins}", True, (0, 0, 0))
+                kills_text = self.font.render(f"Kills: {self.player.kills}", True, (255, 255, 255))
+                coins_text = self.font.render(f"Coins: {self.player.coins}", True, (255, 255, 255))
 
                 self.screen.blit(kills_text, (10, 10))
                 self.screen.blit(coins_text, (10, 40))
