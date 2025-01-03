@@ -6,8 +6,9 @@ from enemy import Enemy
 from health_bar import HealthBar
 import asyncio
 
+
 class Game:
-    def __init__(self, width=800, height=600):
+    def __init__(self, width=800, height=600, network=None):
         """
         Initialize Pygame and game window
 
@@ -60,8 +61,14 @@ class Game:
             }
         }
 
+        self.network = network
+        self.other_players = {}
+
         # Create player
         self.player = AnimatedSprite((400, 300), spritesheet_config)
+        self.player.network_id = None
+        self.player.spritesheet_config = spritesheet_config
+
         self.all_sprites = pygame.sprite.Group(self.player)
         self.enemies = pygame.sprite.Group()
 
@@ -75,7 +82,7 @@ class Game:
 
         # Set up the enemy spawn timer (e.g., every 5 seconds)
         self.SPAWN_ENEMY_EVENT = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.SPAWN_ENEMY_EVENT, 5000)  # 5000 ms = 5 seconds
+        pygame.time.set_timer(self.SPAWN_ENEMY_EVENT, 100000)  # 5000 ms = 5 seconds
 
         self.camera = Camera(self.screen.get_width(), self.screen.get_height(),
             target=self.player, smoothing=0.1)
@@ -83,6 +90,18 @@ class Game:
 
         self.play_button = pygame.Rect(350, 400, 100, 50)  # Simple button rect
         self.title_screen = True  # Flag to show title screen
+
+    def create_shoot_event(self):
+        """Create a shoot event data structure"""
+        if not self.player.current_weapon:
+            return None
+
+        return {
+            'weapon_type': self.player.current_weapon.__class__.__name__,
+            'position': self.player.rect.center,
+            'angle': self.player.current_weapon.angle if hasattr(self.player.current_weapon, 'angle') else 0,
+            'timestamp': pygame.time.get_ticks()
+        }
 
     def create_enemy(self, position):
         """Create a new enemy at the given position."""
@@ -168,6 +187,9 @@ class Game:
                     return
                 self.draw_title_screen()
             else:
+
+                current_time = pygame.time.get_ticks()
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         running = False
@@ -188,6 +210,11 @@ class Game:
 
                 self.handle_player_enemy_collision()
 
+                shoot_event = None
+                mouse_buttons = pygame.mouse.get_pressed()
+                if mouse_buttons[0] and self.player.current_weapon:
+                    shoot_event = self.create_shoot_event()
+
                 if self.player.current_weapon:
                     self.projectiles.add(self.player.current_weapon.projectiles)
 
@@ -201,11 +228,28 @@ class Game:
                     enemy.update(self.player)
                     enemy.attack_player(self.player)
 
-                # Draw game screen
+                if self.network:
+                    player_state = {
+                        'position': self.player.rect.topleft,
+                        'animation': self.player.current_animation
+                    }
+                    world_state = self.network.send(player_state)
+
+                    if world_state:
+                        self.update_other_players(world_state)
+
                 self.screen.fill((0, 0, 0))
 
                 for sprite in self.all_sprites:
                     self.screen.blit(sprite.image, self.camera.apply(sprite))
+
+                for player_id, player_state in self.other_players.items():
+                    if player_id != self.player.network_id:
+                        pos = player_state['position']
+                        sprite = AnimatedSprite(pos, self.player.spritesheet_config)
+                        sprite.current_animation = player_state['animation']
+                        sprite.animate()
+                        self.screen.blit(sprite.image, self.camera.apply(sprite))
 
                 if hasattr(self.player, 'health_bar'):
                     self.player.health_bar.draw(self.screen, self.camera)
@@ -236,6 +280,10 @@ class Game:
             await asyncio.sleep(0)
 
         pygame.quit()
+
+    def update_other_players(self, world_state):
+        """Update the states of other players"""
+        self.other_players = world_state
 
 class Character:
     def __init__(self, x, y, image_files):

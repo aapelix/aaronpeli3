@@ -17,6 +17,8 @@ class AnimatedSprite(pygame.sprite.Sprite):
         super().__init__()
 
         # Animation configuration
+        self.spritesheet_config = spritesheet_config
+        self.network_id = None
         self.animations = {}
         self.current_animation = 'idle'
         self.frame_index = 0
