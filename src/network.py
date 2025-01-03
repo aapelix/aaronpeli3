@@ -2,7 +2,7 @@ import socket
 import pickle
 
 class Network:
-    def __init__(self, host='localhost', port=3000):
+    def __init__(self, host='localhost', port=5000):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = host
         self.port = port

@@ -6,8 +6,8 @@ import os
 
 
 class GameServer:
-    def __init__(self, host='0.0.0.0', port=3000):
-        port = int(os.environ.get('PORT', 3000))
+    def __init__(self, host='0.0.0.0'):
+        port = int(os.getenv('PORT', default=5000))
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((host, port))

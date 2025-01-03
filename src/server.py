@@ -4,7 +4,7 @@ import threading
 import time
 
 class GameServer:
-    def __init__(self, host='localhost', port=3000):
+    def __init__(self, host='localhost', port=5000):
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((host, port))
         self.server.listen()

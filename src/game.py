@@ -82,7 +82,7 @@ class Game:
 
         # Set up the enemy spawn timer (e.g., every 5 seconds)
         self.SPAWN_ENEMY_EVENT = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.SPAWN_ENEMY_EVENT, 100000)  # 5000 ms = 5 seconds
+        pygame.time.set_timer(self.SPAWN_ENEMY_EVENT, 5000)  # 5000 ms = 5 seconds
 
         self.camera = Camera(self.screen.get_width(), self.screen.get_height(),
             target=self.player, smoothing=0.1)
